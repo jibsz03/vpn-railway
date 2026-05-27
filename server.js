@@ -12,7 +12,7 @@ const flash = Buffer.from("dm1lc3M=", 'base64').toString(); // "vmess"
 const v2 = Buffer.from("djJyYXk=", 'base64').toString(); // "v2ray"
 const neko = Buffer.from("Y2xhc2g=", 'base64').toString(); // "clash"
 
-const KV_PRX_URL = "https://raw.githubusercontent.com/backup-heavenly-demons/gateway/refs/heads/main/kvProxyList.json";
+const KV_PRX_URL = "https://raw.githubusercontent.com/jibsz03/vpn/refs/heads/main/kvProxyList.json";
 const DNS_SERVER_ADDRESS = "8.8.8.8";
 const DNS_SERVER_PORT = 53;
 const WS_READY_STATE_OPEN = 1;
@@ -152,245 +152,390 @@ class GatewayServer {
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(`
         <!DOCTYPE html>
-        <html lang="en">
+        <html lang="id">
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>RAILWAY GATEWAY // DASHBOARD</title>
+          <title>J1BTNL Config Lifetime | VLESS & Trojan Generator</title>
           <script src="https://cdn.tailwindcss.com"></script>
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
           <style>
-            @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+            :root {
+              --bg: #071118;
+              --panel: rgba(10, 21, 31, .72);
+              --panel-strong: #0d1a25;
+              --line: rgba(130, 160, 185, .16);
+              --line-glow: rgba(45, 212, 191, .35);
+              --text: #e6f2fa;
+              --muted: #8192a3;
+              --field: rgba(3, 12, 19, .65);
+            }
+            body.light {
+              --bg: #ecf7f7;
+              --panel: rgba(255, 255, 255, .78);
+              --panel-strong: #ffffff;
+              --line: rgba(13, 148, 136, .14);
+              --text: #102433;
+              --muted: #647587;
+              --field: rgba(237, 246, 247, .92);
+            }
+            * { box-sizing: border-box; }
             body {
-              font-family: 'JetBrains Mono', monospace;
-              background-color: #0a0b10;
+              font-family: 'Inter', sans-serif;
+              min-height: 100vh;
+              color: var(--text);
+              background:
+                radial-gradient(circle at 10% 0%, rgba(20,184,166,.22), transparent 32%),
+                radial-gradient(circle at 92% 8%, rgba(139,92,246,.25), transparent 30%),
+                radial-gradient(circle at 48% 100%, rgba(14,165,233,.10), transparent 34%),
+                var(--bg);
+              transition: background .25s ease, color .25s ease;
             }
-            .cyber-glow {
-              box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+            .mono { font-family: 'JetBrains Mono', monospace; }
+            .glass {
+              background: var(--panel);
+              border: 1px solid var(--line);
+              backdrop-filter: blur(18px);
+              -webkit-backdrop-filter: blur(18px);
+              box-shadow: 0 16px 46px rgba(0,0,0,.15);
             }
-            .cyber-glow-green {
-              box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+            .edge:hover { border-color: var(--line-glow); }
+            .field {
+              width: 100%;
+              color: var(--text);
+              background: var(--field);
+              border: 1px solid var(--line);
+              border-radius: .85rem;
+              outline: none;
+              transition: border-color .2s, box-shadow .2s;
             }
-            .neon-border {
-              border: 1px solid rgba(59, 130, 246, 0.3);
+            .field:focus {
+              border-color: rgba(45,212,191,.65);
+              box-shadow: 0 0 0 3px rgba(45,212,191,.12);
             }
-            .neon-border:hover {
-              border-color: rgba(59, 130, 246, 0.8);
+            .field:disabled { opacity: .5; cursor: not-allowed; }
+            .primary {
+              background: linear-gradient(110deg, #14b8a6, #2563eb 52%, #7c3aed);
+              box-shadow: 0 12px 30px rgba(20,184,166,.18);
             }
-            /* Custom Scrollbar */
+            .route-option:checked + label {
+              border-color: rgba(45,212,191,.62);
+              background: rgba(20,184,166,.12);
+              color: #2dd4bf;
+            }
+            .output {
+              word-break: break-all;
+              white-space: pre-wrap;
+              min-height: 5rem;
+            }
+            .pulse-dot { box-shadow: 0 0 0 0 rgba(52,211,153,.5); animation: pingSoft 2s infinite; }
+            @keyframes pingSoft { 0% { box-shadow:0 0 0 0 rgba(52,211,153,.45); } 70% { box-shadow:0 0 0 8px rgba(52,211,153,0); } 100% { box-shadow:0 0 0 0 rgba(52,211,153,0); } }
             ::-webkit-scrollbar { width: 6px; height: 6px; }
-            ::-webkit-scrollbar-track { background: #0f111a; }
-            ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-            ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+            ::-webkit-scrollbar-thumb { background: rgba(100,116,139,.45); border-radius: 999px; }
           </style>
         </head>
-        <body class="text-slate-300 min-h-screen flex flex-col justify-between selection:bg-blue-600 selection:text-white">
+        <body class="selection:bg-teal-500 selection:text-white">
 
-          <header class="border-b border-slate-900 bg-[#0d0e16]/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4">
-            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div class="flex items-center gap-3">
-                <div class="h-10 w-10 rounded-lg bg-blue-600/10 border border-blue-500/30 flex items-center justify-center text-blue-400 cyber-glow animate-pulse">
-                  <i class="fa-solid fa-terminal text-lg"></i>
+          <header class="px-4 sm:px-6 pt-4">
+            <div class="max-w-6xl mx-auto glass rounded-2xl px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-teal-400/20 to-violet-500/20 border border-teal-400/25 flex items-center justify-center text-teal-300 shrink-0">
+                  <i class="fa-solid fa-shield-halved text-xl"></i>
                 </div>
-                <div>
-                  <h1 class="text-xl font-bold tracking-wider text-white">RAILWAY_GATEWAY<span class="text-blue-500">.sys</span></h1>
-                  <p class="text-xs text-slate-500">CORE NODE ACTIVE & SECURED</p>
+                <div class="min-w-0">
+                  <h1 class="text-base sm:text-lg font-bold tracking-tight truncate">J1BTNL <span class="text-teal-400">Config Lifetime</span></h1>
+                  <p class="text-[11px] text-slate-400 truncate">VLESS & TROJAN GENERATOR • WS + TLS</p>
                 </div>
               </div>
-              <div class="flex items-center gap-4">
-                <div class="flex items-center gap-2 bg-[#121420] neon-border px-4 py-2 rounded-lg">
-                  <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 cyber-glow-green animate-ping"></span>
-                  <span class="text-xs font-semibold text-emerald-400 tracking-wider">SYSTEM ONLINE</span>
+              <div class="flex items-center gap-2 shrink-0">
+                <div class="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl border border-emerald-400/15 bg-emerald-400/5">
+                  <span class="pulse-dot h-2 w-2 rounded-full bg-emerald-400"></span>
+                  <span class="text-xs font-semibold text-emerald-400">ONLINE</span>
                 </div>
+                <button id="theme-btn" onclick="toggleTheme()" class="h-10 w-10 rounded-xl border border-slate-500/20 hover:border-teal-400/40 transition flex items-center justify-center" aria-label="Ganti tema">
+                  <i id="theme-icon" class="fa-solid fa-moon text-slate-400"></i>
+                </button>
               </div>
             </div>
           </header>
 
-          <main class="max-w-7xl w-full mx-auto p-6 space-y-8 flex-grow">
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div class="bg-[#0d0e16] neon-border p-5 rounded-xl flex items-center justify-between">
+          <main class="max-w-6xl mx-auto px-4 sm:px-6 py-5 sm:py-8 space-y-5">
+            <section class="glass rounded-3xl p-5 sm:p-7 overflow-hidden relative">
+              <div class="absolute -right-16 -top-20 h-52 w-52 rounded-full bg-violet-500/10 blur-3xl pointer-events-none"></div>
+              <div class="absolute -left-16 bottom-0 h-44 w-44 rounded-full bg-teal-500/10 blur-3xl pointer-events-none"></div>
+              <div class="relative grid lg:grid-cols-[1.12fr_.88fr] gap-6 items-start">
                 <div>
-                  <p class="text-xs text-slate-500 font-medium mb-1">SYSTEM UPTIME</p>
-                  <p id="uptime-val" class="text-lg font-bold text-white">${Math.floor(process.uptime())}s</p>
+                  <div class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-teal-400/20 text-teal-400 bg-teal-400/5 mb-4">
+                    <i class="fa-solid fa-bolt"></i> CONFIG GENERATOR
+                  </div>
+                  <h2 class="text-2xl sm:text-3xl font-extrabold leading-tight mb-3">Buat config <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-violet-400">VLESS & Trojan</span></h2>
+                  <p class="text-sm text-slate-400 leading-relaxed max-w-xl">Gunakan host gateway aktif dengan jalur negara, rotasi proxy, Asia, global, atau custom path sesuai kebutuhan koneksi.</p>
                 </div>
-                <i class="fa-solid fa-clock text-slate-700 text-2xl"></i>
-              </div>
-              <div class="bg-[#0d0e16] neon-border p-5 rounded-xl flex items-center justify-between">
-                <div>
-                  <p class="text-xs text-slate-500 font-medium mb-1">RAM ALLOCATION</p>
-                  <p class="text-lg font-bold text-white">${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB</p>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="rounded-2xl bg-black/10 border border-slate-500/15 p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-slate-500 mb-2">Host</p>
+                    <p class="mono text-xs text-teal-400 truncate">${currentHost}</p>
+                  </div>
+                  <div class="rounded-2xl bg-black/10 border border-slate-500/15 p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-slate-500 mb-2">Security</p>
+                    <p class="mono text-xs text-violet-400">TLS • 443</p>
+                  </div>
+                  <div class="rounded-2xl bg-black/10 border border-slate-500/15 p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-slate-500 mb-2">Network</p>
+                    <p class="mono text-xs text-sky-400">WebSocket</p>
+                  </div>
+                  <div class="rounded-2xl bg-black/10 border border-slate-500/15 p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-slate-500 mb-2">Uptime</p>
+                    <p id="uptime-val" class="mono text-xs text-emerald-400">${Math.floor(process.uptime())}s</p>
+                  </div>
                 </div>
-                <i class="fa-solid fa-microchip text-slate-700 text-2xl"></i>
               </div>
-              <div class="bg-[#0d0e16] neon-border p-5 rounded-xl flex items-center justify-between">
-                <div>
-                  <p class="text-xs text-slate-500 font-medium mb-1">UDP TUNNELING</p>
-                  <p class="text-lg font-bold text-emerald-400">ENABLED</p>
-                </div>
-                <i class="fa-solid fa-bolt text-emerald-900/50 text-2xl"></i>
-              </div>
-              <div class="bg-[#0d0e16] neon-border p-5 rounded-xl flex items-center justify-between">
-                <div>
-                  <p class="text-xs text-slate-500 font-medium mb-1">NODE VERSION</p>
-                  <p class="text-lg font-bold text-blue-400">${process.version}</p>
-                </div>
-                <i class="fa-brands fa-node-js text-blue-900/50 text-2xl"></i>
-              </div>
-            </div>
+            </section>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              
-              <div class="bg-[#0d0e16] border border-slate-900 rounded-xl p-6 space-y-4">
-                <div class="flex items-center gap-2 border-b border-slate-900 pb-3">
-                  <i class="fa-solid fa-network-wired text-blue-400"></i>
-                  <h2 class="text-md font-bold tracking-wide text-white">WEBSOCKET ROUTING ENDPOINTS</h2>
+            <section class="grid lg:grid-cols-[.9fr_1.1fr] gap-5">
+              <div class="glass rounded-3xl p-5 sm:p-6 space-y-5">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-sliders text-teal-400"></i> Pengaturan Config</h3>
+                  <button onclick="fillRandom()" class="text-xs text-teal-400 hover:text-teal-300 font-semibold"><i class="fa-solid fa-wand-magic-sparkles"></i> Acak Data</button>
                 </div>
-                <div class="space-y-3 max-h-[420px] overflow-y-auto pr-1">
-                  
-                  <div class="bg-[#10121d] border border-slate-900/60 p-4 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-3 hover:bg-[#121524] transition">
+
+                <div>
+                  <p class="text-xs text-slate-400 mb-2 font-medium">Pilih path routing</p>
+                  <div class="grid grid-cols-2 gap-2">
+                    <input class="route-option hidden" type="radio" name="route" id="path-id" value="/ID" checked onchange="routeChanged()">
+                    <label for="path-id" class="cursor-pointer rounded-xl border border-slate-500/15 p-3 transition">
+                      <span class="block text-xs font-semibold">Indonesia</span><span class="mono text-[10px] text-slate-500">/ID</span>
+                    </label>
+                    <input class="route-option hidden" type="radio" name="route" id="path-rotate" value="/PROXYLIST/ID,SG,JP" onchange="routeChanged()">
+                    <label for="path-rotate" class="cursor-pointer rounded-xl border border-slate-500/15 p-3 transition">
+                      <span class="block text-xs font-semibold">Rotate</span><span class="mono text-[10px] text-slate-500">ID,SG,JP</span>
+                    </label>
+                    <input class="route-option hidden" type="radio" name="route" id="path-asia" value="/ASIA" onchange="routeChanged()">
+                    <label for="path-asia" class="cursor-pointer rounded-xl border border-slate-500/15 p-3 transition">
+                      <span class="block text-xs font-semibold">Asia</span><span class="mono text-[10px] text-slate-500">/ASIA</span>
+                    </label>
+                    <input class="route-option hidden" type="radio" name="route" id="path-all" value="/ALL" onchange="routeChanged()">
+                    <label for="path-all" class="cursor-pointer rounded-xl border border-slate-500/15 p-3 transition">
+                      <span class="block text-xs font-semibold">Global</span><span class="mono text-[10px] text-slate-500">/ALL</span>
+                    </label>
+                  </div>
+                </div>
+
+                <label class="block">
+                  <span class="text-xs text-slate-400 font-medium">Custom path <span class="text-slate-500">(opsional)</span></span>
+                  <input id="custom-path" class="field mono text-sm px-4 py-3 mt-2" placeholder="/ID atau /IP=PORT" oninput="customPathChanged()">
+                </label>
+
+                <label class="block">
+                  <span class="text-xs text-slate-400 font-medium">UUID VLESS</span>
+                  <div class="mt-2 flex gap-2">
+                    <input id="uuid" class="field mono text-xs px-4 py-3" placeholder="UUID untuk VLESS">
+                    <button onclick="randomUuid()" class="px-3 rounded-xl border border-slate-500/15 hover:border-teal-400/40 text-teal-400 transition" aria-label="Generate UUID"><i class="fa-solid fa-rotate"></i></button>
+                  </div>
+                </label>
+
+                <label class="block">
+                  <span class="text-xs text-slate-400 font-medium">Password Trojan</span>
+                  <div class="mt-2 flex gap-2">
+                    <input id="password" class="field mono text-xs px-4 py-3" placeholder="Password untuk Trojan">
+                    <button onclick="randomPassword()" class="px-3 rounded-xl border border-slate-500/15 hover:border-teal-400/40 text-teal-400 transition" aria-label="Generate password"><i class="fa-solid fa-rotate"></i></button>
+                  </div>
+                </label>
+
+                <label class="block">
+                  <span class="text-xs text-slate-400 font-medium">Nama config / Provider</span>
+                  <input id="label" class="field text-sm px-4 py-3 mt-2" value="J1BTNL Lifetime" placeholder="Contoh: J1BTNL Lifetime">
+                </label>
+
+                <button onclick="generateConfigs(true)" class="primary w-full py-3.5 rounded-xl text-white text-sm font-bold hover:brightness-110 active:scale-[.99] transition">
+                  <i class="fa-solid fa-bolt mr-2"></i> GENERATE CONFIG
+                </button>
+              </div>
+
+              <div class="space-y-4">
+                <div class="glass rounded-3xl p-5 sm:p-6">
+                  <div class="flex items-center justify-between mb-4">
                     <div>
-                      <span class="text-xs bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded font-bold border border-blue-500/20">TARGET COUNTRY</span>
-                      <p class="text-sm font-semibold text-slate-200 mt-2">${protocolWs}://${currentHost}/ID</p>
+                      <h3 class="font-bold text-teal-400"><i class="fa-solid fa-link mr-2"></i>VLESS</h3>
+                      <p class="text-[11px] text-slate-500 mt-1">TLS + WebSocket • UUID</p>
                     </div>
-                    <button onclick="copyText('${protocolWs}://${currentHost}/ID')" class="text-xs bg-[#171a29] border border-slate-800 text-slate-400 hover:text-white hover:border-blue-500 px-3 py-1.5 rounded transition flex items-center gap-1.5 active:scale-95">
-                      <i class="fa-regular fa-copy"></i> COPY
+                    <button onclick="copyOutput('vless-output')" class="px-3 py-2 rounded-xl border border-teal-400/20 text-teal-400 hover:bg-teal-400/10 text-xs font-semibold transition">
+                      <i class="fa-regular fa-copy mr-1"></i> COPY
                     </button>
                   </div>
+                  <pre id="vless-output" class="output mono text-[11px] sm:text-xs rounded-2xl bg-black/15 border border-slate-500/10 p-4 text-slate-300">Tekan GENERATE CONFIG untuk membuat link VLESS.</pre>
+                </div>
 
-                  <div class="bg-[#10121d] border border-slate-900/60 p-4 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-3 hover:bg-[#121524] transition">
+                <div class="glass rounded-3xl p-5 sm:p-6">
+                  <div class="flex items-center justify-between mb-4">
                     <div>
-                      <span class="text-xs bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded font-bold border border-purple-500/20">MULTI-COUNTRY (ROTATE)</span>
-                      <p class="text-sm font-semibold text-slate-200 mt-2">${protocolWs}://${currentHost}/PROXYLIST/ID,SG,JP</p>
+                      <h3 class="font-bold text-violet-400"><i class="fa-solid fa-shield mr-2"></i>TROJAN</h3>
+                      <p class="text-[11px] text-slate-500 mt-1">TLS + WebSocket • Password</p>
                     </div>
-                    <button onclick="copyText('${protocolWs}://${currentHost}/PROXYLIST/ID,SG,JP')" class="text-xs bg-[#171a29] border border-slate-800 text-slate-400 hover:text-white hover:border-blue-500 px-3 py-1.5 rounded transition flex items-center gap-1.5 active:scale-95">
-                      <i class="fa-regular fa-copy"></i> COPY
+                    <button onclick="copyOutput('trojan-output')" class="px-3 py-2 rounded-xl border border-violet-400/20 text-violet-400 hover:bg-violet-400/10 text-xs font-semibold transition">
+                      <i class="fa-regular fa-copy mr-1"></i> COPY
                     </button>
                   </div>
-
-                  <div class="bg-[#10121d] border border-slate-900/60 p-4 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-3 hover:bg-[#121524] transition">
-                    <div>
-                      <span class="text-xs bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold border border-amber-500/20">REGION MATRICES</span>
-                      <p class="text-sm font-semibold text-slate-200 mt-2">${protocolWs}://${currentHost}/ASIA</p>
-                    </div>
-                    <button onclick="copyText('${protocolWs}://${currentHost}/ASIA')" class="text-xs bg-[#171a29] border border-slate-800 text-slate-400 hover:text-white hover:border-blue-500 px-3 py-1.5 rounded transition flex items-center gap-1.5 active:scale-95">
-                      <i class="fa-regular fa-copy"></i> COPY
-                    </button>
-                  </div>
-
-                  <div class="bg-[#10121d] border border-slate-900/60 p-4 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-3 hover:bg-[#121524] transition">
-                    <div>
-                      <span class="text-xs bg-pink-500/10 text-pink-400 px-2 py-0.5 rounded font-bold border border-pink-500/20">GLOBAL CLUSTER</span>
-                      <p class="text-sm font-semibold text-slate-200 mt-2">${protocolWs}://${currentHost}/ALL</p>
-                    </div>
-                    <button onclick="copyText('${protocolWs}://${currentHost}/ALL')" class="text-xs bg-[#171a29] border border-slate-800 text-slate-400 hover:text-white hover:border-blue-500 px-3 py-1.5 rounded transition flex items-center gap-1.5 active:scale-95">
-                      <i class="fa-regular fa-copy"></i> COPY
-                    </button>
-                  </div>
-
+                  <pre id="trojan-output" class="output mono text-[11px] sm:text-xs rounded-2xl bg-black/15 border border-slate-500/10 p-4 text-slate-300">Tekan GENERATE CONFIG untuk membuat link Trojan.</pre>
                 </div>
-              </div>
 
-              <div class="bg-[#0d0e16] border border-slate-900 rounded-xl p-6 space-y-4">
-                <div class="flex items-center gap-2 border-b border-slate-900 pb-3">
-                  <i class="fa-solid fa-gears text-emerald-400"></i>
-                  <h2 class="text-md font-bold tracking-wide text-white">REST INTEGRATION ENDPOINTS</h2>
-                </div>
-                <div class="space-y-3">
-                  
-                  <div class="bg-[#10121d] border border-slate-900/60 p-4 rounded-lg flex items-center justify-between hover:bg-[#121524] transition">
-                    <div>
-                      <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold border border-emerald-500/20 mr-2">GET</span>
-                      <span class="text-xs text-slate-500 font-medium">JSON LIST DIRECTORY</span>
-                      <p class="text-sm font-semibold text-slate-200 mt-2">/api/proxies</p>
-                    </div>
-                    <a href="${protocolHttp}://${currentHost}/api/proxies" target="_blank" class="text-xs bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded transition">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i> TEST
-                    </a>
+                <div class="glass rounded-3xl p-5">
+                  <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <h3 class="font-semibold text-sm"><i class="fa-solid fa-code-branch text-sky-400 mr-2"></i>Endpoint Tetap Aktif</h3>
+                    <span class="text-[10px] text-slate-500">FUNGSI LAMA TIDAK DIUBAH</span>
                   </div>
-
-                  <div class="bg-[#10121d] border border-slate-900/60 p-4 rounded-lg flex items-center justify-between hover:bg-[#121524] transition">
-                    <div>
-                      <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold border border-emerald-500/20 mr-2">GET</span>
-                      <span class="text-xs text-slate-500 font-medium">PLAIN STRING PARSED</span>
-                      <p class="text-sm font-semibold text-slate-200 mt-2">/api/proxies?format=text</p>
-                    </div>
-                    <a href="${protocolHttp}://${currentHost}/api/proxies?format=text" target="_blank" class="text-xs bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded transition">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i> TEST
-                    </a>
-                  </div>
-
-                  <div class="bg-[#10121d] border border-slate-900/60 p-4 rounded-lg flex items-center justify-between hover:bg-[#121524] transition">
-                    <div>
-                      <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold border border-emerald-500/20 mr-2">GET</span>
-                      <span class="text-xs text-slate-500 font-medium">MICRO-CORE HEALTH MONITOR</span>
-                      <p class="text-sm font-semibold text-slate-200 mt-2">/health</p>
-                    </div>
-                    <a href="${protocolHttp}://${currentHost}/health" target="_blank" class="text-xs bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded transition">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i> TEST
-                    </a>
-                  </div>
-
-                </div>
-              </div>
-
-            </div>
-
-            <div class="bg-[#0d0e16] border border-slate-900 rounded-xl p-6 space-y-4">
-              <div class="flex items-center gap-2 border-b border-slate-900 pb-3">
-                <i class="fa-solid fa-rectangle-list text-purple-400"></i>
-                <h2 class="text-md font-bold tracking-wide text-white">INTEGRATION EXECUTION EXAMPLES</h2>
-              </div>
-              <div class="bg-[#07080e] rounded-lg p-5 border border-slate-950 font-mono text-xs sm:text-sm text-slate-400 space-y-4 overflow-x-auto">
-                <div>
-                  <p class="text-slate-600 mb-1">// Query cluster via terminal cli line</p>
-                  <div class="flex items-center justify-between bg-[#0a0b12] p-3 rounded border border-slate-900">
-                    <span class="text-blue-400">curl ${protocolHttp}://${currentHost}/api/proxies</span>
-                    <button onclick="copyText('curl ${protocolHttp}://${currentHost}/api/proxies')" class="text-slate-600 hover:text-blue-400 transition"><i class="fa-regular fa-copy"></i></button>
-                  </div>
-                </div>
-                <div>
-                  <p class="text-slate-600 mb-1">// Direct tunneling streaming live mapping</p>
-                  <div class="flex items-center justify-between bg-[#0a0b12] p-3 rounded border border-slate-900">
-                    <span class="text-purple-400">wscat -c ${protocolWs}://${currentHost}/ID</span>
-                    <button onclick="copyText('wscat -c ${protocolWs}://${currentHost}/ID')" class="text-slate-600 hover:text-purple-400 transition"><i class="fa-regular fa-copy"></i></button>
+                  <div class="grid sm:grid-cols-3 gap-2 text-xs">
+                    <a href="${protocolHttp}://${currentHost}/api/proxies" target="_blank" class="edge rounded-xl border border-slate-500/15 px-3 py-3 transition hover:text-teal-400"><span class="block text-[10px] text-emerald-400 mb-1">GET</span>/api/proxies</a>
+                    <a href="${protocolHttp}://${currentHost}/api/proxies?format=text" target="_blank" class="edge rounded-xl border border-slate-500/15 px-3 py-3 transition hover:text-teal-400"><span class="block text-[10px] text-emerald-400 mb-1">GET</span>/api/proxies?format=text</a>
+                    <a href="${protocolHttp}://${currentHost}/health" target="_blank" class="edge rounded-xl border border-slate-500/15 px-3 py-3 transition hover:text-teal-400"><span class="block text-[10px] text-emerald-400 mb-1">GET</span>/health</a>
                   </div>
                 </div>
               </div>
-            </div>
-
+            </section>
           </main>
 
-          <footer class="border-t border-slate-950 bg-[#07080d] px-6 py-4 text-center text-xs text-slate-600">
-            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-              <p>&copy; ${new Date().getFullYear()} RAILWAY GATEWAY. ALL SYSTEM VECTORS OPERATIONAL.</p>
-              <p class="flex items-center gap-1"><i class="fa-solid fa-shield text-blue-500/40"></i> SECURED BY END-TO-END KERNEL TUNNEL</p>
+          <footer class="px-4 sm:px-6 pb-5">
+            <div class="max-w-6xl mx-auto text-center text-xs text-slate-500">
+              &copy; ${new Date().getFullYear()} J1BTNL Config Lifetime • Gateway host: <span class="mono">${currentHost}</span>
             </div>
           </footer>
 
-          <div id="toast" class="fixed bottom-6 right-6 bg-blue-600 text-white font-semibold px-4 py-2.5 rounded-lg shadow-lg opacity-0 pointer-events-none transition-all duration-300 transform translate-y-2 text-xs z-50 flex items-center gap-2">
-            <i class="fa-solid fa-circle-check"></i> ENDPOINT COPIED TO CLIPBOARD
+          <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-5 px-4 py-3 rounded-xl text-xs font-semibold text-white bg-slate-900 border border-teal-400/30 shadow-xl opacity-0 pointer-events-none transition duration-200 translate-y-2 z-50">
+            <i class="fa-solid fa-circle-check text-teal-400 mr-2"></i><span id="toast-text">Berhasil</span>
           </div>
 
           <script>
+            const CONFIG_HOST = ${JSON.stringify(currentHost)};
+            let start = ${Math.floor(process.uptime())};
+
+            function showToast(message, isError) {
+              const toast = document.getElementById('toast');
+              const text = document.getElementById('toast-text');
+              text.innerText = message;
+              toast.style.borderColor = isError ? 'rgba(248,113,113,.45)' : 'rgba(45,212,191,.35)';
+              toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+              toast.classList.add('opacity-100', 'translate-y-0');
+              clearTimeout(window.toastTimer);
+              window.toastTimer = setTimeout(function () {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+              }, 2300);
+            }
+
+            function randomUuid() {
+              const uuid = (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                const r = Math.random() * 16 | 0;
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+              }));
+              document.getElementById('uuid').value = uuid;
+            }
+
+            function randomPassword() {
+              const chars = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+              const values = new Uint32Array(20);
+              crypto.getRandomValues(values);
+              let output = '';
+              values.forEach(function (v) { output += chars[v % chars.length]; });
+              document.getElementById('password').value = output;
+            }
+
+            function fillRandom() {
+              randomUuid();
+              randomPassword();
+              generateConfigs(false);
+              showToast('UUID dan password baru dibuat', false);
+            }
+
+            function customPathChanged() {
+              const value = document.getElementById('custom-path').value.trim();
+              if (value) {
+                document.querySelectorAll('input[name="route"]').forEach(function (el) { el.checked = false; });
+              } else if (!document.querySelector('input[name="route"]:checked')) {
+                document.getElementById('path-id').checked = true;
+              }
+            }
+
+            function routeChanged() {
+              document.getElementById('custom-path').value = '';
+            }
+
+            function getPath() {
+              let custom = document.getElementById('custom-path').value.trim();
+              if (custom) return custom.charAt(0) === '/' ? custom : '/' + custom;
+              const selected = document.querySelector('input[name="route"]:checked');
+              return selected ? selected.value : '/ID';
+            }
+
+            function generateConfigs(withNotice) {
+              const uuid = document.getElementById('uuid').value.trim();
+              const password = document.getElementById('password').value.trim();
+              const label = document.getElementById('label').value.trim() || 'J1BTNL Lifetime';
+              const path = getPath();
+
+              if (!/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/.test(uuid)) {
+                showToast('Isi UUID VLESS yang valid', true);
+                return;
+              }
+              if (!password) {
+                showToast('Isi password Trojan terlebih dahulu', true);
+                return;
+              }
+
+              const hostValue = encodeURIComponent(CONFIG_HOST);
+              const pathValue = encodeURIComponent(path);
+              const nameValue = encodeURIComponent(label + ' ' + path.replace(/\//g, ' ').trim());
+              const vless = 'vless://' + uuid + '@' + CONFIG_HOST + ':443?encryption=none&security=tls&sni=' + hostValue + '&fp=random&type=ws&host=' + hostValue + '&path=' + pathValue + '#' + nameValue;
+              const trojan = 'trojan://' + encodeURIComponent(password) + '@' + CONFIG_HOST + ':443?security=tls&sni=' + hostValue + '&fp=random&type=ws&host=' + hostValue + '&path=' + pathValue + '#' + nameValue;
+
+              document.getElementById('vless-output').textContent = vless;
+              document.getElementById('trojan-output').textContent = trojan;
+              if (withNotice) showToast('Config VLESS dan Trojan berhasil dibuat', false);
+            }
+
             function copyText(text) {
-              navigator.clipboard.writeText(text).then(() => {
-                const toast = document.getElementById('toast');
-                toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
-                toast.classList.add('opacity-100', 'translate-y-0');
-                setTimeout(() => {
-                  toast.classList.remove('opacity-100', 'translate-y-0');
-                  toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
-                }, 2500);
+              navigator.clipboard.writeText(text).then(function () {
+                showToast('Config berhasil disalin', false);
+              }).catch(function () {
+                const tmp = document.createElement('textarea');
+                tmp.value = text;
+                document.body.appendChild(tmp);
+                tmp.select();
+                document.execCommand('copy');
+                tmp.remove();
+                showToast('Config berhasil disalin', false);
               });
             }
 
-            // Client runtime uptime updating
-            let start = ${Math.floor(process.uptime())};
-            setInterval(() => {
-              start++;
-              document.getElementById('uptime-val').innerText = start + 's';
-            }, 1000);
+            function copyOutput(id) {
+              const value = document.getElementById(id).textContent;
+              if (!value || value.indexOf('Tekan GENERATE') === 0) {
+                showToast('Generate config terlebih dahulu', true);
+                return;
+              }
+              copyText(value);
+            }
+
+            function toggleTheme() {
+              document.body.classList.toggle('light');
+              const active = document.body.classList.contains('light');
+              document.getElementById('theme-icon').className = active ? 'fa-solid fa-sun text-amber-500' : 'fa-solid fa-moon text-slate-400';
+              localStorage.setItem('j1btnl-theme', active ? 'light' : 'dark');
+            }
+
+            (function init() {
+              if (localStorage.getItem('j1btnl-theme') === 'light') {
+                document.body.classList.add('light');
+                document.getElementById('theme-icon').className = 'fa-solid fa-sun text-amber-500';
+              }
+              randomUuid();
+              randomPassword();
+              generateConfigs(false);
+              setInterval(function () {
+                start++;
+                document.getElementById('uptime-val').innerText = start + 's';
+              }, 1000);
+            })();
           </script>
         </body>
         </html>
