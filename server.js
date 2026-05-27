@@ -208,7 +208,7 @@ class GatewayServer {
     <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
       <article class="glass rounded-2xl p-4">
         <p class="text-[11px] font-semibold tracking-wider text-slate-500 mb-2">STATUS</p>
-        <p class="text-sm sm:text-base font-bold text-emerald-300 flex items-center gap-2"><span class="dot h-2 w-2 rounded-full bg-emerald-400"></span>ONLINE</p>
+        <p id="status-val" class="text-sm sm:text-base font-bold text-emerald-300 flex items-center gap-2"><span id="status-dot" class="dot h-2 w-2 rounded-full bg-emerald-400"></span><span id="status-text">ONLINE</span></p>
       </article>
       <article class="glass rounded-2xl p-4">
         <p class="text-[11px] font-semibold tracking-wider text-slate-500 mb-2">UPTIME</p>
@@ -216,7 +216,7 @@ class GatewayServer {
       </article>
       <article class="glass rounded-2xl p-4">
         <p class="text-[11px] font-semibold tracking-wider text-slate-500 mb-2">MEMORY</p>
-        <p class="text-sm sm:text-base font-bold text-white">${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB</p>
+        <p id="memory-val" class="text-sm sm:text-base font-bold text-white">${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB</p>
       </article>
       <article class="glass rounded-2xl p-4">
         <p class="text-[11px] font-semibold tracking-wider text-slate-500 mb-2">NODE</p>
@@ -299,7 +299,9 @@ class GatewayServer {
     const FIXED_PORT = '443';
     const FIXED_SECURITY = 'tls';
     const FIXED_PATH = '/ID';
+    const HEALTH_ENDPOINT = '/health';
     let uptimeSeconds = ${Math.floor(process.uptime())};
+    let healthOnline = true;
     function randomUuid() {
       if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -317,7 +319,36 @@ class GatewayServer {
       if (minutes) return minutes + 'm ' + seconds + 's';
       return seconds + 's';
     }
-    function renderUptime() { document.getElementById('uptime-val').textContent = formatUptime(uptimeSeconds); }
+    function renderUptime() { document.getElementById('uptime-val').textContent = formatUptime(Math.max(0, Math.floor(uptimeSeconds))); }
+    function renderMemory(bytes) {
+      const value = Number(bytes);
+      document.getElementById('memory-val').textContent = Number.isFinite(value) ? Math.round(value / 1024 / 1024) + ' MB' : '-- MB';
+    }
+    function renderStatus(online) {
+      const text = document.getElementById('status-text');
+      const wrapper = document.getElementById('status-val');
+      const dot = document.getElementById('status-dot');
+      text.textContent = online ? 'ONLINE' : 'OFFLINE';
+      wrapper.classList.toggle('text-emerald-300', online);
+      wrapper.classList.toggle('text-rose-300', !online);
+      dot.classList.toggle('bg-emerald-400', online);
+      dot.classList.toggle('bg-rose-400', !online);
+    }
+    async function refreshStats() {
+      try {
+        const response = await fetch(HEALTH_ENDPOINT, { cache: 'no-store' });
+        if (!response.ok) throw new Error('health request failed');
+        const data = await response.json();
+        if (Number.isFinite(Number(data.uptime))) uptimeSeconds = Number(data.uptime);
+        if (data.memory && data.memory.heapUsed !== undefined) renderMemory(data.memory.heapUsed);
+        healthOnline = true;
+        renderStatus(true);
+        renderUptime();
+      } catch (error) {
+        healthOnline = false;
+        renderStatus(false);
+      }
+    }
     function generateConfigs() {
       const uuid = document.getElementById('uuid').value;
       const host = activeHost();
@@ -334,7 +365,7 @@ class GatewayServer {
     }
     function copyValue(id) { putClipboard(document.getElementById(id).value, 'UUID disalin'); }
     function copyConfig(id) { putClipboard(document.getElementById(id).textContent, id.toUpperCase() + ' disalin'); }
-    function copyAll() { putClipboard(document.getElementById('vless').textContent + '\n' + document.getElementById('trojan').textContent, 'Semua config disalin'); }
+    function copyAll() { putClipboard(document.getElementById('vless').textContent + '\\n' + document.getElementById('trojan').textContent, 'Semua config disalin'); }
     function showToast(message) {
       const toast = document.getElementById('toast');
       document.getElementById('toastText').textContent = message;
@@ -344,8 +375,11 @@ class GatewayServer {
     }
     document.getElementById('uuid').value = randomUuid();
     renderUptime();
-    setInterval(function(){ uptimeSeconds++; renderUptime(); }, 1000);
+    renderStatus(true);
     generateConfigs();
+    refreshStats();
+    setInterval(function(){ uptimeSeconds++; renderUptime(); }, 1000);
+    setInterval(refreshStats, 5000);
   </script>
 </body>
 </html>
