@@ -29,5 +29,6 @@
     "railway"
   ],
   "author": "Kuncung",
-  "license": "MIT"
+  "license": "MIT",
+  "type": "module"
 }

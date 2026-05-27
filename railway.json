@@ -5,13 +5,14 @@
     "buildCommand": "npm install",
     "watchPatterns": [
       "server.js",
-      "package.json"
+      "package.json",
+      "railway.json"
     ]
   },
   "deploy": {
     "startCommand": "node server.js",
     "healthcheckPath": "/health",
-    "healthcheckTimeout": 10,
+    "healthcheckTimeout": 60,
     "healthcheckInterval": 30,
     "restartPolicyType": "ON_FAILURE",
     "numReplicas": 1,
@@ -19,7 +20,7 @@
   },
   "variables": {
     "NODE_ENV": "production",
-    "PORT": "3000",
+    "PORT": "8080",
     "NODE_OPTIONS": "--max-old-space-size=512"
   }
 }
